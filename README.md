@@ -1,18 +1,13 @@
-# Evaldoc
+# Natural Eval: Natural Language AI Evaluation
 
-Evaldoc allows defining an executable AI evaluation workflow with natural
-language and representing that knowledge with one `eval-doc.yaml`file. In other
-words, this is a tool for storing testable knowledge of AI good behavior from folks who
-know zero about building AI.
-
-## Criteria Language Grammar Design Challenge
-
-Our open source grammar design challenge is to maximize criteria precision while minimizing the loss of general criteria expressiveness.
+The aim of `naturaleval` is to allow a controlled natural language (CNL) to define
+an executable and reproducible AI evaluation in as precise a manner as code and
+as expressive a manner as natural language.
 
 ## Current Highlights
 
-- **Portability:** A single YAML file represents your evaluation workflow (rubric, input schema, output schema, providers).
-- **Swapability:** Your evaluation workflow can swap different criteria, AI providers, and evaluator platform providers.
+- **Portability/Reproducibility:** A single YAML file represents your evaluation workflow (rubric, evidence schema, provider bindings).
+- **Swapability:** Your evaluation workflow can swap different criteria, AI providers, and evaluator data platform providers.
 - **Hackability:** The essential core (the YAML file's grammar or internal representation) is one light pydantic open source module.
 - **Transparency:** Rubric predicates contain their natural language source.
 - **Precision:** Rubric grammar enforces semantic ambiguity and schema.
@@ -22,48 +17,26 @@ Our open source grammar design challenge is to maximize criteria precision while
     observations
   - conditional predicates contain severity levels
 
-## Dialog Illustration
-
-- President: Prove to me why I should buy your AI?
-- You: Have all your stakeholder email me their `eval-doc` file, and I will make you a reproducible report.
-- The People: All the power must not be in the hands of AI Engineers in making the AI Traffic Police Bots.
-- You: Email your representative your personal `eval-doc` file judging the quality of Traffic Police Bots.
-
-## Aims by Phase
-
-- The short term aim is to make it simpler to jump start a spec driven development of a LLM prompt without being tied to any one runtime framework.
-- The middle term aim is to make it simpler and more expressive for developers to evaluate AI agents.
-- The long term aim is for people with zero knowledge of how AI works to control the criteria of good AI behavior.
-
 ## Example CLI usage
 
 ```bash
-evaldoc --interpret "the task is to discover what PMC manuscript facts we can query to help the user with her problem"
-evaldoc --interpret "the task output must contain a field of type list: `audience_memberships`
-evaldoc --interpret "clinical trials on animals are never relevant to the biohacker audience"
-evaldoc --interpret "run evaluations against these raw input conversation threads in dir `/.ted/nobsmed/test_cases`
-evaldoc --interpret "run evaluations against this AI Agent invocation`
+naturaleval interpret --input eval-spec.md --output eval-spec.yaml
+naturaleval --patch -f eval-compose.yaml "top 20 nobsmed.com response to `health hacks for migraines` are more relevant than chatgpt.com's same results"
+naturaleval run --ai-input observations.jsonl --eval-spec eval-spec.yaml
+naturaleval evaluate --ai-output observations.jsonl --eval-spec eval-spec.yaml
+```
 
-#or
+console output ...
 
-evaldoc compose --interpret --input instructions.md --output my-ted-compose.yaml
-
-evaldoc evaluate --format=md >> report.model
-#or
-evaldoc evaluate -f my-ted-compose.yaml
-# console output looks like....
+```json
 {
     "summary": .....
     "faults": ...
 }
 ```
 
-## Components
+## `eval-spec.yaml` has three components
 
-A valid`some_task.eval.yaml` requires three main parts:
-
-### what are we looking at? - observations schema
-
-### what is the criteria or rubric for "good behavior"? - predicates
-
-### who we are judging? - provider bindings
+- evidence - input and output schema and location
+- criteria/rubric - Define what is good AI behavior given the evidence?
+- provider bindings - Define how to simulate the AI workers we are judging?
