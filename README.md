@@ -6,7 +6,10 @@ as expressive a manner as natural language.
 
 ## Current Highlights
 
-- **Portability/Reproducibility:** A single YAML file represents your evaluation workflow (rubric, evidence schema, provider bindings).
+- **Portability/Reproducibility:** A single YAML file represents your evaluation workflow (rubric, evidence schema, provider bindings). `eval-spec.yaml` has three components
+  - evidence - input and output schema and location
+  - criteria/rubric - Define what is good AI behavior given the evidence?
+  - provider bindings - Define how to simulate the AI workers we are judging?
 - **Swapability:** Your evaluation workflow can swap different criteria, AI providers, and evaluator data platform providers.
 - **Hackability:** The essential core (the YAML file's grammar or internal representation) is one light pydantic open source module.
 - **Transparency:** Rubric predicates contain their natural language source.
@@ -25,18 +28,3 @@ naturaleval --patch -f eval-compose.yaml "top 20 nobsmed.com response to `health
 naturaleval run --ai-input observations.jsonl --eval-spec eval-spec.yaml
 naturaleval evaluate --ai-output observations.jsonl --eval-spec eval-spec.yaml
 ```
-
-console output ...
-
-```json
-{
-    "summary": .....
-    "faults": ...
-}
-```
-
-## `eval-spec.yaml` has three components
-
-- evidence - input and output schema and location
-- criteria/rubric - Define what is good AI behavior given the evidence?
-- provider bindings - Define how to simulate the AI workers we are judging?
